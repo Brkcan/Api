@@ -2,6 +2,11 @@ package com.crede.rest;
 
 import java.net.URI;
 import java.security.Principal;
+import java.sql.Connection;
+import java.sql.DriverManager;
+import java.sql.PreparedStatement;
+import java.sql.ResultSet;
+import java.sql.SQLException;
 import java.util.Enumeration;
 import java.util.List;
 
@@ -61,9 +66,31 @@ public class CompanyRestController {
 
 	@RequestMapping(method = RequestMethod.PUT, value = "/UpdateCompany/{id}", produces = MediaType.APPLICATION_JSON_VALUE)
 	public ResponseEntity<?> updateCompany(@PathVariable("id") int id, @RequestBody Company companyRequest) {
-
+		Connection conn = null;
+		Company company2 = new Company();
+		Authentication auth = SecurityContextHolder.getContext().getAuthentication();
 		Company company = (Company) companyService.findCompanyID(id);
-		company.setHomePageUrl(companyRequest.getHomePageUrl());
+		try {
+			conn = DriverManager.getConnection(
+					"jdbc:sqlserver://crede.database.windows.net:1433;databaseName=CredePortalDB;user=Crededata;password=Idbehold12;");
+		} catch (SQLException e) {
+			e.printStackTrace();
+		}
+		String sql = ("SELECT intProjectID, username from CredePortalDB.dbo.tblProjects where username =  '"
+				+ auth.getName() + "' ");
+		try {
+			PreparedStatement preparedStatement = conn.prepareStatement(sql);
+			ResultSet rs = preparedStatement.executeQuery();
+			while(rs.next()) {
+				int t = company2.setIntProjectID(rs.getInt("intProjectID"));
+				if(t == company.getIntProjectID()) {
+				company.setHomePageUrl(companyRequest.getHomePageUrl());
+				}
+			}
+		} catch (Exception e) {
+			// TODO: handle exception
+		}
+		//company.setHomePageUrl(companyRequest.getHomePageUrl());
 		companyService.updateCompany(company);
 		return ResponseEntity.ok().build();
 
@@ -84,11 +111,6 @@ public class CompanyRestController {
 		return companyService.findAllArticle();
 	}
 
-	/*
-	 * @GetMapping(value = "/company") public List<CompanySearchList>
-	 * findAllCompanySearchList() { return
-	 * companyService.findAllCompanySearchList(); }
-	 */
 
 	@RequestMapping(method = RequestMethod.GET, value = "/SearchTSKeyword", produces = MediaType.APPLICATION_JSON_VALUE)
 	public ResponseEntity<List<Article>> getCompanySearch(@RequestParam("firma") String strLegalInstitutionName)

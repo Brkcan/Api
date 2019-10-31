@@ -73,9 +73,10 @@ public class CompanyDAOHibernateImpl implements CompanyDAO {
 				companyList.add(company);
 				@SuppressWarnings("unchecked")
 				Query<Company> tquery = (Query<Company>) entityManager.createQuery(
-						"Select companyName,brand,vkn,homePageUrl,keyword from Company Where intProjectID = '" + t
+						"Select id,companyName,brand,vkn,homePageUrl,keyword from Company Where intProjectID = '" + t
 								+ "' ");
 				tt = tquery.getResultList();
+				System.out.println(tt);
 				System.out.println(company);
 			}
 		} catch (SQLException e) {
@@ -263,26 +264,25 @@ public class CompanyDAOHibernateImpl implements CompanyDAO {
 			while (rs.next()) {
 				int t = company2.setIntProjectID(rs.getInt("intProjectID"));
 				int f = company.getId();
-				@SuppressWarnings("unchecked")
-				Query<Company> tquery = (Query<Company>) entityManager
-						.createQuery("Select homePageUrl from Company Where intProjectID = '" + t
-								+ "' and intCompanyID = '" + f + "' ");
-				update = tquery.getResultList();
+				company.setHomePageUrl(rs.getString("strLegalInstitutionName"));
+				update.add(company);
+				/*
+				 * @SuppressWarnings("unchecked") Query<Company> tquery = (Query<Company>)
+				 * entityManager
+				 * .createQuery("Select homePageUrl from Company Where intProjectID = '" + t +
+				 * "' and intCompanyID = '" + f + "' "); update = tquery.getResultList();
+				 */
 				// update.add(company);
-				if (t == company.getIntProjectID()) {
-					System.out.println("company :" + company);
-					System.out.println("Company2 : " + company2);
-
-					company.setHomePageUrl(company.getHomePageUrl());
-					company.setBrand(company.getBrand());
-					company.setVkn(company.getVkn());
-					System.out.println(company);
-					update.add(company);
-
-				} else {
-					System.out.println("Güncelleme yapılamadı...");
-				}
-				System.out.println(update);
+				/*
+				 * if (t == company.getIntProjectID()) { System.out.println("company :" +
+				 * company); System.out.println("Company2 : " + company2);
+				 * 
+				 * company.setHomePageUrl(company2.getHomePageUrl());
+				 * company.setBrand(company2.getBrand()); company.setVkn(company2.getVkn());
+				 * System.out.println(company); update.add(company);
+				 * 
+				 * } else { System.out.println("Güncelleme yapılamadı..."); }
+				 */
 			}
 		} catch (SQLException e) {
 			// TODO Auto-generated catch block
