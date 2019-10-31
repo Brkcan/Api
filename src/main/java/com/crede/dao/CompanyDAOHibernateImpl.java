@@ -266,23 +266,7 @@ public class CompanyDAOHibernateImpl implements CompanyDAO {
 				int f = company.getId();
 				company.setHomePageUrl(rs.getString("strLegalInstitutionName"));
 				update.add(company);
-				/*
-				 * @SuppressWarnings("unchecked") Query<Company> tquery = (Query<Company>)
-				 * entityManager
-				 * .createQuery("Select homePageUrl from Company Where intProjectID = '" + t +
-				 * "' and intCompanyID = '" + f + "' "); update = tquery.getResultList();
-				 */
-				// update.add(company);
-				/*
-				 * if (t == company.getIntProjectID()) { System.out.println("company :" +
-				 * company); System.out.println("Company2 : " + company2);
-				 * 
-				 * company.setHomePageUrl(company2.getHomePageUrl());
-				 * company.setBrand(company2.getBrand()); company.setVkn(company2.getVkn());
-				 * System.out.println(company); update.add(company);
-				 * 
-				 * } else { System.out.println("Güncelleme yapılamadı..."); }
-				 */
+				
 			}
 		} catch (SQLException e) {
 			// TODO Auto-generated catch block
