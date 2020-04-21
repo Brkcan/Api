@@ -23,6 +23,7 @@ public interface CompanyDAO {
 	public Person findPersonID(int id);
 	
 	//public List<CompanySearchList> findAllCompanySearchLists();
+	//fladkflijkadg
 	public Company updateCompany(Company company);
 	
 	public void deleteCompany(Company company);
